@@ -121,6 +121,55 @@ const updateSheetRow = async (rowNumber, values, accessToken) => {
   }
 };
 
+const deleteSheetRow = async (rowNumber, accessToken) => {
+  const metadataUrl = `https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}?fields=sheets.properties`;
+  const metadataResponse = await fetch(metadataUrl, {
+    headers: {
+      Authorization: `Bearer ${accessToken}`,
+      'Content-Type': 'application/json',
+    },
+  });
+
+  if (!metadataResponse.ok) {
+    const errorText = await metadataResponse.text();
+    throw new Error(`Failed to read sheet metadata: ${errorText}`);
+  }
+
+  const metadata = await metadataResponse.json();
+  const sheet = metadata.sheets?.find((s) => s.properties?.title === SHEET_NAME);
+  if (!sheet || typeof sheet.properties.sheetId !== 'number') {
+    throw new Error(`Sheet '${SHEET_NAME}' not found in the spreadsheet`);
+  }
+
+  const url = `https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}:batchUpdate`;
+  const response = await fetch(url, {
+    method: 'POST',
+    headers: {
+      Authorization: `Bearer ${accessToken}`,
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      requests: [
+        {
+          deleteDimension: {
+            range: {
+              sheetId: sheet.properties.sheetId,
+              dimension: 'ROWS',
+              startIndex: rowNumber - 1,
+              endIndex: rowNumber,
+            },
+          },
+        },
+      ],
+    }),
+  });
+
+  if (!response.ok) {
+    const errorText = await response.text();
+    throw new Error(`Failed to delete sheet row: ${errorText}`);
+  }
+};
+
 export default async function handler(req, res) {
   try {
     if (req.method === 'GET') {
@@ -170,7 +219,20 @@ export default async function handler(req, res) {
       return res.status(200).json(items);
     }
 
-    res.setHeader('Allow', 'GET, POST, PUT');
+    if (req.method === 'DELETE') {
+      const { rowNumber } = req.body || {};
+      if (!rowNumber) {
+        return res.status(400).json({ error: 'rowNumber is required for delete' });
+      }
+
+      await deleteSheetRow(rowNumber, accessToken);
+      const response = await fetch(getSheetUrl());
+      const text = await response.text();
+      const items = parseSheetResponse(text);
+      return res.status(200).json(items);
+    }
+
+    res.setHeader('Allow', 'GET, POST, PUT, DELETE');
     return res.status(405).json({ error: 'Method not allowed' });
   } catch (error) {
     return res.status(500).json({ error: error.message || 'Internal server error' });

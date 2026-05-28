@@ -59,29 +59,30 @@
 
 .form-panel {
   background: white;
-  padding: 24px;
+  padding: 28px;
   border-radius: 18px;
   box-shadow: 0 12px 28px rgba(15, 23, 42, 0.08);
-  margin-bottom: 20px;
+  margin: 0 auto 24px;
+  max-width: 760px;
 }
 
 .form-panel h2 {
-  margin: 0 0 16px;
-  font-size: 1.1rem;
+  margin: 0 0 20px;
+  font-size: 1.2rem;
   color: #111827;
 }
 
 .inventory-form {
   display: grid;
-  gap: 12px;
+  gap: 18px;
 }
 
 .inventory-form input {
   width: 100%;
-  min-height: 44px;
-  padding: 0 14px;
+  min-height: 48px;
+  padding: 0 16px;
   border: 1px solid #cbd5e1;
-  border-radius: 12px;
+  border-radius: 14px;
   font-size: 1rem;
   transition: border-color 180ms ease, box-shadow 180ms ease;
 }
@@ -107,6 +108,51 @@
   margin-top: 12px;
   font-size: 0.95rem;
   color: #475569;
+}
+
+.secondary-button {
+  border: none;
+  border-radius: 10px;
+  padding: 10px 16px;
+  background: #e2e8f0;
+  color: #0f172a;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: background-color 180ms ease, transform 180ms ease;
+}
+
+.secondary-button:hover {
+  background: #cbd5e1;
+}
+
+.form-grid {
+  display: grid;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+@media (min-width: 720px) {
+  .form-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+.form-field {
+  display: grid;
+  gap: 8px;
+}
+
+.form-field label {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #334155;
+}
+
+.form-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  align-items: center;
 }
 
 .visually-hidden {

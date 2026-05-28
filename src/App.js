@@ -217,6 +217,25 @@ function App() {
     setEditingId(null);
   };
 
+  const deleteItem = async (item) => {
+    if (!window.confirm('Delete this item from the sheet?')) {
+      return;
+    }
+
+    if (saveUrl && item.rowNumber != null) {
+      try {
+        await saveSheetChange('DELETE', { rowNumber: item.rowNumber });
+        setStatusMessage('Item deleted from Google Sheet.');
+      } catch (err) {
+        setError(err.message || 'Unable to delete item');
+      }
+      return;
+    }
+
+    setItems((prev) => prev.filter((current) => current.id !== item.id));
+    setStatusMessage('Local item removed. Deploy to persist deletions to the sheet.');
+  };
+
   const cancelEdit = () => {
     setEditingId(null);
   };
@@ -326,6 +345,9 @@ function App() {
                               <td className="table-actions">
                                 <button type="button" className="small-button" onClick={() => startEditing(item)}>
                                   Edit
+                                </button>
+                                <button type="button" className="small-button secondary" onClick={() => deleteItem(item)}>
+                                  Delete
                                 </button>
                               </td>
                             </>

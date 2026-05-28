@@ -17,46 +17,53 @@ export default function AddProductPage({
       <section className="form-panel">
         <h2>Add new inventory item</h2>
         <form className="inventory-form" onSubmit={handleAddItem}>
-          <label htmlFor="new-name" className="visually-hidden">
-            Product Name
-          </label>
-          <input
-            id="new-name"
-            name="productName"
-            type="text"
-            placeholder="Product Name"
-            value={newItem.name}
-            onChange={(event) => handleNewItemChange('name', event.target.value)}
-          />
-          <label htmlFor="new-price" className="visually-hidden">
-            Price
-          </label>
-          <input
-            id="new-price"
-            name="price"
-            type="text"
-            placeholder="Price"
-            value={newItem.price}
-            onChange={(event) => handleNewItemChange('price', event.target.value)}
-          />
-          <label htmlFor="new-location" className="visually-hidden">
-            Location
-          </label>
-          <input
-            id="new-location"
-            name="location"
-            type="text"
-            placeholder="Location"
-            value={newItem.location}
-            onChange={(event) => handleNewItemChange('location', event.target.value)}
-          />
-          <button type="submit" className="primary-button">
-            Add Item
-          </button>
+          <div className="form-grid">
+            <div className="form-field">
+              <label htmlFor="new-name">Product Name</label>
+              <input
+                id="new-name"
+                name="productName"
+                type="text"
+                placeholder="Product Name"
+                value={newItem.name}
+                onChange={(event) => handleNewItemChange('name', event.target.value)}
+              />
+            </div>
+
+            <div className="form-field">
+              <label htmlFor="new-price">Price</label>
+              <input
+                id="new-price"
+                name="price"
+                type="text"
+                placeholder="Price"
+                value={newItem.price}
+                onChange={(event) => handleNewItemChange('price', event.target.value)}
+              />
+            </div>
+
+            <div className="form-field">
+              <label htmlFor="new-location">Location</label>
+              <input
+                id="new-location"
+                name="location"
+                type="text"
+                placeholder="Location"
+                value={newItem.location}
+                onChange={(event) => handleNewItemChange('location', event.target.value)}
+              />
+            </div>
+          </div>
+
+          <div className="form-actions">
+            <button type="submit" className="primary-button">
+              Add Item
+            </button>
+            <button type="button" className="secondary-button" onClick={onBack}>
+              Back to inventory
+            </button>
+          </div>
         </form>
-        <button type="button" className="secondary-button" onClick={onBack}>
-          Back to inventory
-        </button>
         <p className="status-note">
           {useServerApi
             ? 'Changes are sent to the sheet API. Make sure the app is deployed with Google service account credentials for permanent saves.'
